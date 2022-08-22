@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "build"
+  },
+  "include": ["functions/**/*", "infra/**/*"],
+  "exclude": ["node_modules"]
+}

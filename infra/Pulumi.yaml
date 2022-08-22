@@ -1,0 +1,4 @@
+name: image-resizer
+runtime: nodejs
+description: Image Resizer
+stackConfigDir: stack/

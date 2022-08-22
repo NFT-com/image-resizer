@@ -1,0 +1,27 @@
+{
+  "name": "@nftcom/image-resizer",
+  "version": "1.0.0",
+  "description": "Resize images in s3 to faster website performance",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "prepackage": "rm -rf build layers",
+    "package": "./package.sh",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@pulumi/aws": "5.10.0",
+    "@pulumi/pulumi": "3.38.0",
+    "@types/sharp": "0.30.5",
+    "eslint": "8.22.0",
+    "eslint-config-airbnb-base": "15.0.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.150.0",
+    "sharp": "0.30.7"
+  }
+}
