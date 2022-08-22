@@ -62,6 +62,27 @@ const lambdaFunctionName = prefixName()
   }],
 })
 
+const bucketPolicy = new aws.s3.BucketPolicy("my-bucket-policy", {
+  bucket: processedBucket.bucket,
+  policy: processedBucket.bucket.apply(publicReadPolicyForBucket)
+})
+
+function publicReadPolicyForBucket(bucketName: string) {
+  return JSON.stringify({
+      Version: "2012-10-17",
+      Statement: [{
+          Effect: "Allow",
+          Principal: "*",
+          Action: [
+              "s3:GetObject"
+          ],
+          Resource: [
+              `arn:aws:s3:::${bucketName}/*`
+          ]
+      }]
+  });
+}
+
 /**
  * IAM Role
  */
