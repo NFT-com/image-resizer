@@ -32,7 +32,7 @@ const resizeBucket = async () => {
 
         const dstKey = `${RESIZE_WIDTH}/${item.Key}.webp`
 
-        await resize(SRC_BUCKET, item.Key, DEST_BUCKET, dstKey, imageType)
+        await resize(SRC_BUCKET, item.Key!, DEST_BUCKET, dstKey, imageType)
         await new Promise(r => setTimeout(r, 100));
       })
       truncated = response.IsTruncated!

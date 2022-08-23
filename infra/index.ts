@@ -161,11 +161,6 @@ const createLambdaFunction = new aws.lambda.Function(lambdaFunctionName, {
   code,
   layers: [nodeModuleLambdaLayer.arn],
   memorySize: 128,
-  environment: {
-    variables: {
-      DYNAMODB_TABLE: "todosDynamoDbTableName"
-    }
-  },
   tags: {
     Environment: pulumi.getStack()
   }
