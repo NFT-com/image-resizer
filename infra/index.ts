@@ -160,7 +160,8 @@ const createLambdaFunction = new aws.lambda.Function(lambdaFunctionName, {
   role: executionRole.arn,
   code,
   layers: [nodeModuleLambdaLayer.arn],
-  memorySize: 128,
+  memorySize: 1024,
+  timeout: 15,
   tags: {
     Environment: pulumi.getStack()
   }
