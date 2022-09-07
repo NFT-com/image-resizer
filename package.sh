@@ -9,10 +9,6 @@ cd $CWD
 npm install --prefer-offline --platform=linux --arch=x64
 npm run build
 
-echo "zip build directory"
-cd build
-zip -q -r archive.zip functions/*
-
 # Package node_modules
 mkdir -p $BUILD_PATH_LAYERS
 cp $CWD/package.json $BUILD_PATH_LAYERS/package.json
@@ -21,13 +17,11 @@ cd $BUILD_PATH_LAYERS
 echo "installing production only dependencies"
 npm install --production --prefer-offline --platform=linux --arch=x64
 
-echo "zip node_modules directory"
-mkdir -p ./nodejs
-mv node_modules nodejs/node_modules
-zip -q -r archive.zip *
-rm -rf nodejs
-
 echo "exiting to root directory"
 cd $CWD
+
+echo "build Dockerfile"
+docker build . -t 016437323894.dkr.ecr.us-east-1.amazonaws.com/dev-image-resizer:latest --platform=linux/amd64
+docker push 016437323894.dkr.ecr.us-east-1.amazonaws.com/dev-image-resizer:latest
 
 echo "Done."

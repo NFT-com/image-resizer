@@ -1,4 +1,5 @@
 import * as aws from "@pulumi/aws"
+import * as docker from '@pulumi/docker'
 import * as pulumi from "@pulumi/pulumi"
 import { join } from "path"
 
@@ -29,6 +30,7 @@ const assetBucket = new aws.s3.Bucket(assetBucketName, {
   bucket: assetBucketName
 },
 { protect: true })
+const lambdaImageName = prefixName()
 const lambdaFunctionName = prefixName()
 
 /**
@@ -133,33 +135,25 @@ const rolePolicy = new aws.iam.RolePolicy(executionRolePolicyName, {
 })
 
 /**
- * Code Archive & Lambda layer
+ * ECR Repo for image
  */
-const code = new pulumi.asset.AssetArchive({
-  ".": new pulumi.asset.FileArchive(relativeRootPath("build/archive.zip"))
+ const repository = new aws.ecr.Repository(lambdaImageName, {
+  name: lambdaImageName,
+  imageScanningConfiguration: {
+    scanOnPush: true,
+  },
 })
 
-const zipFile = relativeRootPath("layers/archive.zip")
-const nodeModuleLambdaLayerName = prefixName("lambda-layer-nodemodules")
-const nodeModuleLambdaLayer = new aws.lambda.LayerVersion(
-  nodeModuleLambdaLayerName,
-  {
-    compatibleRuntimes: [aws.lambda.Runtime.NodeJS16dX],
-    code: new pulumi.asset.FileArchive(zipFile),
-    layerName: nodeModuleLambdaLayerName
-  }
-)
+export const repositoryUrl = repository.repositoryUrl
 
 /**
  * Lambda Function
  */
 const createLambdaFunction = new aws.lambda.Function(lambdaFunctionName, {
   name: lambdaFunctionName,
-  runtime: aws.lambda.Runtime.NodeJS16dX,
-  handler: "functions/resize.handler",
+  imageUri: pulumi.interpolate`${repository.repositoryUrl}:latest`,
+  packageType: 'Image',
   role: executionRole.arn,
-  code,
-  layers: [nodeModuleLambdaLayer.arn],
   memorySize: 1024,
   timeout: 15,
   tags: {
